@@ -17,21 +17,25 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt
+from datetime import datetime
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
 
-class RetryJobResponseSchema(BaseModel):
+class StatusChangedEventSchema(BaseModel):
     """
-    RetryJobResponseSchema
+    StatusChangedEventSchema
     """ # noqa: E501
-    count: Optional[StrictInt] = Field(default=0, description="Current retry count")
-    retry: StrictBool = Field(description="True if the job should be retried")
-    delay: Optional[Annotated[int, Field(strict=True, ge=0)]] = None
-    run_config: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["count", "retry", "delay", "run_config"]
+    event_id: StrictStr
+    name: StrictStr
+    venue_name: Optional[StrictStr]
+    local_date: Optional[datetime]
+    url: Optional[StrictStr]
+    vividseats_url: Optional[StrictStr]
+    viagogo_url: Optional[StrictStr]
+    venue_id: StrictStr
+    __properties: ClassVar[List[str]] = ["event_id", "name", "venue_name", "local_date", "url", "vividseats_url", "viagogo_url", "venue_id"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +55,7 @@ class RetryJobResponseSchema(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of RetryJobResponseSchema from a JSON string"""
+        """Create an instance of StatusChangedEventSchema from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,21 +76,36 @@ class RetryJobResponseSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if delay (nullable) is None
+        # set to None if venue_name (nullable) is None
         # and model_fields_set contains the field
-        if self.delay is None and "delay" in self.model_fields_set:
-            _dict['delay'] = None
+        if self.venue_name is None and "venue_name" in self.model_fields_set:
+            _dict['venue_name'] = None
 
-        # set to None if run_config (nullable) is None
+        # set to None if local_date (nullable) is None
         # and model_fields_set contains the field
-        if self.run_config is None and "run_config" in self.model_fields_set:
-            _dict['run_config'] = None
+        if self.local_date is None and "local_date" in self.model_fields_set:
+            _dict['local_date'] = None
+
+        # set to None if url (nullable) is None
+        # and model_fields_set contains the field
+        if self.url is None and "url" in self.model_fields_set:
+            _dict['url'] = None
+
+        # set to None if vividseats_url (nullable) is None
+        # and model_fields_set contains the field
+        if self.vividseats_url is None and "vividseats_url" in self.model_fields_set:
+            _dict['vividseats_url'] = None
+
+        # set to None if viagogo_url (nullable) is None
+        # and model_fields_set contains the field
+        if self.viagogo_url is None and "viagogo_url" in self.model_fields_set:
+            _dict['viagogo_url'] = None
 
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of RetryJobResponseSchema from a dict"""
+        """Create an instance of StatusChangedEventSchema from a dict"""
         if obj is None:
             return None
 
@@ -94,10 +113,14 @@ class RetryJobResponseSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "count": obj.get("count") if obj.get("count") is not None else 0,
-            "retry": obj.get("retry"),
-            "delay": obj.get("delay"),
-            "run_config": obj.get("run_config")
+            "event_id": obj.get("event_id"),
+            "name": obj.get("name"),
+            "venue_name": obj.get("venue_name"),
+            "local_date": obj.get("local_date"),
+            "url": obj.get("url"),
+            "vividseats_url": obj.get("vividseats_url"),
+            "viagogo_url": obj.get("viagogo_url"),
+            "venue_id": obj.get("venue_id")
         })
         return _obj
 

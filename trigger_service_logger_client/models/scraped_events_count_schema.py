@@ -29,7 +29,17 @@ class ScrapedEventsCountSchema(BaseModel):
     ticketmaster: StrictInt
     vividseats: StrictInt
     evenue: StrictInt
-    __properties: ClassVar[List[str]] = ["ticketmaster", "vividseats", "evenue"]
+    tickpick: StrictInt
+    stubhub: StrictInt
+    gotickets: StrictInt
+    milb: StrictInt
+    mlb: StrictInt
+    playhousesquare: StrictInt
+    telecharge: StrictInt
+    mpv: StrictInt
+    etix: StrictInt
+    ovationtix: StrictInt
+    __properties: ClassVar[List[str]] = ["ticketmaster", "vividseats", "evenue", "tickpick", "stubhub", "gotickets", "milb", "mlb", "playhousesquare", "telecharge", "mpv", "etix", "ovationtix"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -84,7 +94,17 @@ class ScrapedEventsCountSchema(BaseModel):
         _obj = cls.model_validate({
             "ticketmaster": obj.get("ticketmaster"),
             "vividseats": obj.get("vividseats"),
-            "evenue": obj.get("evenue")
+            "evenue": obj.get("evenue"),
+            "tickpick": obj.get("tickpick"),
+            "stubhub": obj.get("stubhub"),
+            "gotickets": obj.get("gotickets"),
+            "milb": obj.get("milb"),
+            "mlb": obj.get("mlb"),
+            "playhousesquare": obj.get("playhousesquare"),
+            "telecharge": obj.get("telecharge"),
+            "mpv": obj.get("mpv"),
+            "etix": obj.get("etix"),
+            "ovationtix": obj.get("ovationtix")
         })
         return _obj
 

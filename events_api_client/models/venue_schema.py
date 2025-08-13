@@ -17,21 +17,25 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
 
-class RetryJobResponseSchema(BaseModel):
+class VenueSchema(BaseModel):
     """
-    RetryJobResponseSchema
+    VenueSchema
     """ # noqa: E501
-    count: Optional[StrictInt] = Field(default=0, description="Current retry count")
-    retry: StrictBool = Field(description="True if the job should be retried")
-    delay: Optional[Annotated[int, Field(strict=True, ge=0)]] = None
-    run_config: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["count", "retry", "delay", "run_config"]
+    id: StrictStr
+    exchange: StrictStr
+    venue_id: StrictStr
+    name: StrictStr
+    address: Optional[StrictStr]
+    city: Optional[StrictStr]
+    postal_code: Optional[StrictStr]
+    state: Optional[StrictStr]
+    country: Optional[StrictStr]
+    __properties: ClassVar[List[str]] = ["id", "exchange", "venue_id", "name", "address", "city", "postal_code", "state", "country"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +55,7 @@ class RetryJobResponseSchema(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of RetryJobResponseSchema from a JSON string"""
+        """Create an instance of VenueSchema from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,21 +76,36 @@ class RetryJobResponseSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if delay (nullable) is None
+        # set to None if address (nullable) is None
         # and model_fields_set contains the field
-        if self.delay is None and "delay" in self.model_fields_set:
-            _dict['delay'] = None
+        if self.address is None and "address" in self.model_fields_set:
+            _dict['address'] = None
 
-        # set to None if run_config (nullable) is None
+        # set to None if city (nullable) is None
         # and model_fields_set contains the field
-        if self.run_config is None and "run_config" in self.model_fields_set:
-            _dict['run_config'] = None
+        if self.city is None and "city" in self.model_fields_set:
+            _dict['city'] = None
+
+        # set to None if postal_code (nullable) is None
+        # and model_fields_set contains the field
+        if self.postal_code is None and "postal_code" in self.model_fields_set:
+            _dict['postal_code'] = None
+
+        # set to None if state (nullable) is None
+        # and model_fields_set contains the field
+        if self.state is None and "state" in self.model_fields_set:
+            _dict['state'] = None
+
+        # set to None if country (nullable) is None
+        # and model_fields_set contains the field
+        if self.country is None and "country" in self.model_fields_set:
+            _dict['country'] = None
 
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of RetryJobResponseSchema from a dict"""
+        """Create an instance of VenueSchema from a dict"""
         if obj is None:
             return None
 
@@ -94,10 +113,15 @@ class RetryJobResponseSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "count": obj.get("count") if obj.get("count") is not None else 0,
-            "retry": obj.get("retry"),
-            "delay": obj.get("delay"),
-            "run_config": obj.get("run_config")
+            "id": obj.get("id"),
+            "exchange": obj.get("exchange"),
+            "venue_id": obj.get("venue_id"),
+            "name": obj.get("name"),
+            "address": obj.get("address"),
+            "city": obj.get("city"),
+            "postal_code": obj.get("postal_code"),
+            "state": obj.get("state"),
+            "country": obj.get("country")
         })
         return _obj
 

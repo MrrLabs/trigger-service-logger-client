@@ -17,21 +17,23 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt
-from typing import Any, ClassVar, Dict, List, Optional
-from typing_extensions import Annotated
+from pydantic import BaseModel, ConfigDict, StrictFloat, StrictInt, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing import Optional, Set
 from typing_extensions import Self
 
-class RetryJobResponseSchema(BaseModel):
+class EventMappingSchema(BaseModel):
     """
-    RetryJobResponseSchema
+    EventMappingSchema
     """ # noqa: E501
-    count: Optional[StrictInt] = Field(default=0, description="Current retry count")
-    retry: StrictBool = Field(description="True if the job should be retried")
-    delay: Optional[Annotated[int, Field(strict=True, ge=0)]] = None
-    run_config: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["count", "retry", "delay", "run_config"]
+    mapping_uuid: StrictStr
+    exchange: StrictStr
+    event_id: StrictStr
+    target_exchange: StrictStr
+    target_id: StrictStr
+    target_url: Optional[StrictStr] = None
+    score: Union[StrictFloat, StrictInt]
+    __properties: ClassVar[List[str]] = ["mapping_uuid", "exchange", "event_id", "target_exchange", "target_id", "target_url", "score"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +53,7 @@ class RetryJobResponseSchema(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of RetryJobResponseSchema from a JSON string"""
+        """Create an instance of EventMappingSchema from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,21 +74,16 @@ class RetryJobResponseSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if delay (nullable) is None
+        # set to None if target_url (nullable) is None
         # and model_fields_set contains the field
-        if self.delay is None and "delay" in self.model_fields_set:
-            _dict['delay'] = None
-
-        # set to None if run_config (nullable) is None
-        # and model_fields_set contains the field
-        if self.run_config is None and "run_config" in self.model_fields_set:
-            _dict['run_config'] = None
+        if self.target_url is None and "target_url" in self.model_fields_set:
+            _dict['target_url'] = None
 
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of RetryJobResponseSchema from a dict"""
+        """Create an instance of EventMappingSchema from a dict"""
         if obj is None:
             return None
 
@@ -94,10 +91,13 @@ class RetryJobResponseSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "count": obj.get("count") if obj.get("count") is not None else 0,
-            "retry": obj.get("retry"),
-            "delay": obj.get("delay"),
-            "run_config": obj.get("run_config")
+            "mapping_uuid": obj.get("mapping_uuid"),
+            "exchange": obj.get("exchange"),
+            "event_id": obj.get("event_id"),
+            "target_exchange": obj.get("target_exchange"),
+            "target_id": obj.get("target_id"),
+            "target_url": obj.get("target_url"),
+            "score": obj.get("score")
         })
         return _obj
 

@@ -17,21 +17,19 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt
-from typing import Any, ClassVar, Dict, List, Optional
-from typing_extensions import Annotated
+from pydantic import BaseModel, ConfigDict, Field, StrictInt
+from typing import Any, ClassVar, Dict, List
+from events_api_client.models.event_mapping_created_schema import EventMappingCreatedSchema
 from typing import Optional, Set
 from typing_extensions import Self
 
-class RetryJobResponseSchema(BaseModel):
+class EventMappingCreatedResponseSchema(BaseModel):
     """
-    RetryJobResponseSchema
+    Response schema for newly created event mappings.
     """ # noqa: E501
-    count: Optional[StrictInt] = Field(default=0, description="Current retry count")
-    retry: StrictBool = Field(description="True if the job should be retried")
-    delay: Optional[Annotated[int, Field(strict=True, ge=0)]] = None
-    run_config: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["count", "retry", "delay", "run_config"]
+    count: StrictInt = Field(description="Total count of event mappings")
+    events: List[EventMappingCreatedSchema] = Field(description="List of newly created event mappings")
+    __properties: ClassVar[List[str]] = ["count", "events"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +49,7 @@ class RetryJobResponseSchema(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of RetryJobResponseSchema from a JSON string"""
+        """Create an instance of EventMappingCreatedResponseSchema from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,21 +70,18 @@ class RetryJobResponseSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if delay (nullable) is None
-        # and model_fields_set contains the field
-        if self.delay is None and "delay" in self.model_fields_set:
-            _dict['delay'] = None
-
-        # set to None if run_config (nullable) is None
-        # and model_fields_set contains the field
-        if self.run_config is None and "run_config" in self.model_fields_set:
-            _dict['run_config'] = None
-
+        # override the default output from pydantic by calling `to_dict()` of each item in events (list)
+        _items = []
+        if self.events:
+            for _item_events in self.events:
+                if _item_events:
+                    _items.append(_item_events.to_dict())
+            _dict['events'] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of RetryJobResponseSchema from a dict"""
+        """Create an instance of EventMappingCreatedResponseSchema from a dict"""
         if obj is None:
             return None
 
@@ -94,10 +89,8 @@ class RetryJobResponseSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "count": obj.get("count") if obj.get("count") is not None else 0,
-            "retry": obj.get("retry"),
-            "delay": obj.get("delay"),
-            "run_config": obj.get("run_config")
+            "count": obj.get("count"),
+            "events": [EventMappingCreatedSchema.from_dict(_item) for _item in obj["events"]] if obj.get("events") is not None else None
         })
         return _obj
 

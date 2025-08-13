@@ -17,8 +17,9 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from typing_extensions import Annotated
 from trigger_service_logger_client.models.scrap_type import ScrapType
 from typing import Optional, Set
 from typing_extensions import Self
@@ -29,9 +30,10 @@ class JobRunMessage(BaseModel):
     """ # noqa: E501
     job_run_id: StrictStr
     event_id: StrictStr
-    scrap_type: ScrapType
+    scrap_type: Optional[ScrapType]
     run_config: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["job_run_id", "event_id", "scrap_type", "run_config"]
+    retry: Optional[Annotated[int, Field(strict=True, ge=0)]] = 0
+    __properties: ClassVar[List[str]] = ["job_run_id", "event_id", "scrap_type", "run_config", "retry"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -72,6 +74,11 @@ class JobRunMessage(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # set to None if scrap_type (nullable) is None
+        # and model_fields_set contains the field
+        if self.scrap_type is None and "scrap_type" in self.model_fields_set:
+            _dict['scrap_type'] = None
+
         # set to None if run_config (nullable) is None
         # and model_fields_set contains the field
         if self.run_config is None and "run_config" in self.model_fields_set:
@@ -92,7 +99,8 @@ class JobRunMessage(BaseModel):
             "job_run_id": obj.get("job_run_id"),
             "event_id": obj.get("event_id"),
             "scrap_type": obj.get("scrap_type"),
-            "run_config": obj.get("run_config")
+            "run_config": obj.get("run_config"),
+            "retry": obj.get("retry") if obj.get("retry") is not None else 0
         })
         return _obj
 

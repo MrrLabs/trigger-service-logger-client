@@ -27,11 +27,11 @@ from urllib.parse import quote
 from typing import Tuple, Optional, List, Dict, Union
 from pydantic import SecretStr
 
-from trigger_service_logger_client.configuration import Configuration
-from trigger_service_logger_client.api_response import ApiResponse, T as ApiResponseT
-import trigger_service_logger_client.models
-from trigger_service_logger_client import rest
-from trigger_service_logger_client.exceptions import (
+from events_api_client.configuration import Configuration
+from events_api_client.api_response import ApiResponse, T as ApiResponseT
+import events_api_client.models
+from events_api_client import rest
+from events_api_client.exceptions import (
     ApiValueError,
     ApiException,
     BadRequestException,
@@ -315,7 +315,7 @@ class ApiClient:
                 return_data = self.__deserialize_file(response_data)
             elif response_type is not None:
                 match = None
-                content_type = response_data.headers.get('content-type')
+                content_type = response_data.getheader('content-type')
                 if content_type is not None:
                     match = re.search(r"charset=([a-zA-Z\-\d]+)[\s;]?", content_type)
                 encoding = match.group(1) if match else "utf-8"
@@ -332,7 +332,7 @@ class ApiClient:
         return ApiResponse(
             status_code = response_data.status,
             data = return_data,
-            headers = response_data.headers,
+            headers = response_data.getheaders(),
             raw_data = response_data.data
         )
 
@@ -459,17 +459,17 @@ class ApiClient:
             if klass in self.NATIVE_TYPES_MAPPING:
                 klass = self.NATIVE_TYPES_MAPPING[klass]
             else:
-                klass = getattr(trigger_service_logger_client.models, klass)
+                klass = getattr(events_api_client.models, klass)
 
         if klass in self.PRIMITIVE_TYPES:
             return self.__deserialize_primitive(data, klass)
-        elif klass is object:
+        elif klass == object:
             return self.__deserialize_object(data)
-        elif klass is datetime.date:
+        elif klass == datetime.date:
             return self.__deserialize_date(data)
-        elif klass is datetime.datetime:
+        elif klass == datetime.datetime:
             return self.__deserialize_datetime(data)
-        elif klass is decimal.Decimal:
+        elif klass == decimal.Decimal:
             return decimal.Decimal(data)
         elif issubclass(klass, Enum):
             return self.__deserialize_enum(data, klass)
@@ -704,7 +704,7 @@ class ApiClient:
         os.close(fd)
         os.remove(path)
 
-        content_disposition = response.headers.get("Content-Disposition")
+        content_disposition = response.getheader("Content-Disposition")
         if content_disposition:
             m = re.search(
                 r'filename=[\'"]?([^\'"\s]+)[\'"]?',
