@@ -21,7 +21,7 @@ from typing import Optional, Union
 import aiohttp
 import aiohttp_retry
 
-from trigger_service_logger_client.exceptions import ApiException, ApiValueError
+from events_api_client.exceptions import ApiException, ApiValueError
 
 RESTResponseType = aiohttp.ClientResponse
 
@@ -40,17 +40,12 @@ class RESTResponse(io.IOBase):
             self.data = await self.response.read()
         return self.data
 
-    @property
-    def headers(self):
-        """Returns a CIMultiDictProxy of response headers."""
-        return self.response.headers
-
     def getheaders(self):
-        """Returns a CIMultiDictProxy of the response headers; use ``headers`` instead."""
+        """Returns a CIMultiDictProxy of the response headers."""
         return self.response.headers
 
     def getheader(self, name, default=None):
-        """Returns a given response header; use ``headers.get()`` instead."""
+        """Returns a given response header."""
         return self.response.headers.get(name, default)
 
 

@@ -12,7 +12,6 @@
 """  # noqa: E501
 
 
-import base64
 import copy
 import http.client as httplib
 import logging
@@ -21,6 +20,7 @@ import sys
 from typing import Any, ClassVar, Dict, List, Literal, Optional, TypedDict, Union
 from typing_extensions import NotRequired, Self
 
+import urllib3
 
 
 JSON_SCHEMA_VALIDATION_KEYWORDS = {
@@ -112,6 +112,7 @@ HTTPSignatureAuthSetting = TypedDict(
 AuthSettings = TypedDict(
     "AuthSettings",
     {
+        "APIKeyHeader": APIKeyAuthSetting,
     },
     total=False,
 )
@@ -161,9 +162,27 @@ class Configuration:
     :param retries: Number of retries for API requests.
     :param ca_cert_data: verify the peer using concatenated CA certificate data
       in PEM (str) or DER (bytes) format.
-    :param cert_file: the path to a client certificate file, for mTLS.
-    :param key_file: the path to a client key file, for mTLS.
 
+    :Example:
+
+    API Key Authentication Example.
+    Given the following security scheme in the OpenAPI specification:
+      components:
+        securitySchemes:
+          cookieAuth:         # name for the security scheme
+            type: apiKey
+            in: cookie
+            name: JSESSIONID  # cookie name
+
+    You can programmatically set the cookie:
+
+conf = events_api_client.Configuration(
+    api_key={'cookieAuth': 'abc123'}
+    api_key_prefix={'cookieAuth': 'JSESSIONID'}
+)
+
+    The following cookie will be added to the HTTP request:
+       Cookie: JSESSIONID abc123
     """
 
     _default: ClassVar[Optional[Self]] = None
@@ -184,8 +203,6 @@ class Configuration:
         ssl_ca_cert: Optional[str]=None,
         retries: Optional[int] = None,
         ca_cert_data: Optional[Union[str, bytes]] = None,
-        cert_file: Optional[str]=None,
-        key_file: Optional[str]=None,
         *,
         debug: Optional[bool] = None,
     ) -> None:
@@ -234,7 +251,8 @@ class Configuration:
         self.logger = {}
         """Logging Settings
         """
-        self.logger["package_logger"] = logging.getLogger("trigger_service_logger_client")
+        self.logger["package_logger"] = logging.getLogger("events_api_client")
+        self.logger["urllib3_logger"] = logging.getLogger("urllib3")
         self.logger_format = '%(asctime)s %(levelname)s %(message)s'
         """Log format
         """
@@ -266,10 +284,10 @@ class Configuration:
         """Set this to verify the peer using PEM (str) or DER (bytes)
            certificate data.
         """
-        self.cert_file = cert_file
+        self.cert_file = None
         """client certificate file
         """
-        self.key_file = key_file
+        self.key_file = None
         """client key file
         """
         self.assert_hostname = None
@@ -479,10 +497,9 @@ class Configuration:
         password = ""
         if self.password is not None:
             password = self.password
-
-        return "Basic " + base64.b64encode(
-            (username + ":" + password).encode('utf-8')
-        ).decode('utf-8')
+        return urllib3.util.make_headers(
+            basic_auth=username + ':' + password
+        ).get('authorization')
 
     def auth_settings(self)-> AuthSettings:
         """Gets Auth Settings dict for api client.
@@ -490,6 +507,15 @@ class Configuration:
         :return: The Auth Settings information dict.
         """
         auth: AuthSettings = {}
+        if 'APIKeyHeader' in self.api_key:
+            auth['APIKeyHeader'] = {
+                'type': 'api_key',
+                'in': 'header',
+                'key': 'X-API-Key',
+                'value': self.get_api_key_with_prefix(
+                    'APIKeyHeader',
+                ),
+            }
         return auth
 
     def to_debug_report(self) -> str:
@@ -549,7 +575,6 @@ class Configuration:
                 variable_name, variable['default_value'])
 
             if 'enum_values' in variable \
-                    and variable['enum_values'] \
                     and used_value not in variable['enum_values']:
                 raise ValueError(
                     "The variable `{0}` in the host URL has invalid value "
