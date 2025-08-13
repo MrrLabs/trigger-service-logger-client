@@ -17,23 +17,26 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt
 from typing import Any, ClassVar, Dict, List, Optional
 from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 class RetryJobResponseSchema(BaseModel):
     """
     RetryJobResponseSchema
     """ # noqa: E501
+    count: Optional[StrictInt] = Field(default=0, description="Current retry count")
     retry: StrictBool = Field(description="True if the job should be retried")
     delay: Optional[Annotated[int, Field(strict=True, ge=0)]] = None
     run_config: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["retry", "delay", "run_config"]
+    __properties: ClassVar[List[str]] = ["count", "retry", "delay", "run_config"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -45,8 +48,7 @@ class RetryJobResponseSchema(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -93,6 +95,7 @@ class RetryJobResponseSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "count": obj.get("count") if obj.get("count") is not None else 0,
             "retry": obj.get("retry"),
             "delay": obj.get("delay"),
             "run_config": obj.get("run_config")

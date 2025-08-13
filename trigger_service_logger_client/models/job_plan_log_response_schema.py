@@ -22,6 +22,7 @@ from pydantic import BaseModel, ConfigDict, StrictBool, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 class JobPlanLogResponseSchema(BaseModel):
     """
@@ -44,10 +45,14 @@ class JobPlanLogResponseSchema(BaseModel):
     finished_data_process: Optional[datetime] = None
     success_data_process: Optional[StrictBool] = None
     data_process_notes: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["run_id", "job_id", "initiated", "finished", "success", "error_reason", "urgent", "process_notes", "started_scraping", "finished_scraping", "success_scraping", "scrap_notes", "scrap_retry", "started_data_process", "finished_data_process", "success_data_process", "data_process_notes"]
+    finished_arb: Optional[datetime] = None
+    success_arb: Optional[StrictBool] = None
+    arb_notes: Optional[Dict[str, Any]] = None
+    __properties: ClassVar[List[str]] = ["run_id", "job_id", "initiated", "finished", "success", "error_reason", "urgent", "process_notes", "started_scraping", "finished_scraping", "success_scraping", "scrap_notes", "scrap_retry", "started_data_process", "finished_data_process", "success_data_process", "data_process_notes", "finished_arb", "success_arb", "arb_notes"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -59,8 +64,7 @@ class JobPlanLogResponseSchema(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -155,6 +159,21 @@ class JobPlanLogResponseSchema(BaseModel):
         if self.data_process_notes is None and "data_process_notes" in self.model_fields_set:
             _dict['data_process_notes'] = None
 
+        # set to None if finished_arb (nullable) is None
+        # and model_fields_set contains the field
+        if self.finished_arb is None and "finished_arb" in self.model_fields_set:
+            _dict['finished_arb'] = None
+
+        # set to None if success_arb (nullable) is None
+        # and model_fields_set contains the field
+        if self.success_arb is None and "success_arb" in self.model_fields_set:
+            _dict['success_arb'] = None
+
+        # set to None if arb_notes (nullable) is None
+        # and model_fields_set contains the field
+        if self.arb_notes is None and "arb_notes" in self.model_fields_set:
+            _dict['arb_notes'] = None
+
         return _dict
 
     @classmethod
@@ -183,7 +202,10 @@ class JobPlanLogResponseSchema(BaseModel):
             "started_data_process": obj.get("started_data_process"),
             "finished_data_process": obj.get("finished_data_process"),
             "success_data_process": obj.get("success_data_process"),
-            "data_process_notes": obj.get("data_process_notes")
+            "data_process_notes": obj.get("data_process_notes"),
+            "finished_arb": obj.get("finished_arb"),
+            "success_arb": obj.get("success_arb"),
+            "arb_notes": obj.get("arb_notes")
         })
         return _obj
 
