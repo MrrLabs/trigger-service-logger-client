@@ -22,6 +22,7 @@ from pydantic import BaseModel, ConfigDict, StrictBool, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 class JobPlanLogResponseSchema(BaseModel):
     """
@@ -47,7 +48,8 @@ class JobPlanLogResponseSchema(BaseModel):
     __properties: ClassVar[List[str]] = ["run_id", "job_id", "initiated", "finished", "success", "error_reason", "urgent", "process_notes", "started_scraping", "finished_scraping", "success_scraping", "scrap_notes", "scrap_retry", "started_data_process", "finished_data_process", "success_data_process", "data_process_notes"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -59,8 +61,7 @@ class JobPlanLogResponseSchema(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:

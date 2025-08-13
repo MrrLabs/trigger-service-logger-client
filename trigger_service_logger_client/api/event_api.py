@@ -1,5 +1,3 @@
-# coding: utf-8
-
 """
     FastAPI
 
@@ -11,19 +9,22 @@
     Do not edit the class manually.
 """  # noqa: E501
 
+
 import warnings
 from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
 from pydantic import Field, StrictBool, StrictInt, StrictStr
-from typing import List, Optional
+from typing import Any, List, Optional
 from typing_extensions import Annotated
+from trigger_service_logger_client.models.archive_events_request_schema import ArchiveEventsRequestSchema
 from trigger_service_logger_client.models.base_response_schema import BaseResponseSchema
 from trigger_service_logger_client.models.enable_events_planning_request_schema import EnableEventsPlanningRequestSchema
 from trigger_service_logger_client.models.error_reason_events_response_schema import ErrorReasonEventsResponseSchema
 from trigger_service_logger_client.models.event_planning_frequency_response_schema import EventPlanningFrequencyResponseSchema
 from trigger_service_logger_client.models.event_planning_frequency_schema import EventPlanningFrequencySchema
+from trigger_service_logger_client.models.events_cursor_response_schema import EventsCursorResponseSchema
 from trigger_service_logger_client.models.events_response_schema import EventsResponseSchema
 from trigger_service_logger_client.models.force_run_events_request_schema import ForceRunEventsRequestSchema
 from trigger_service_logger_client.models.last_run_forced_schema import LastRunForcedSchema
@@ -297,6 +298,282 @@ class EventApi:
         return self.api_client.param_serialize(
             method='POST',
             resource_path='/v1/event/archive/{event_id}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    async def archive_events_by_type_v1_event_archive_bulk_by_type_post(
+        self,
+        archive_events_request_schema: ArchiveEventsRequestSchema,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> BaseResponseSchema:
+        """Archive Events By Type
+
+        Archive events by event_id and job_type pairs. More precise than bulk archive - archives specific exchange types only.
+
+        :param archive_events_request_schema: (required)
+        :type archive_events_request_schema: ArchiveEventsRequestSchema
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._archive_events_by_type_v1_event_archive_bulk_by_type_post_serialize(
+            archive_events_request_schema=archive_events_request_schema,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "BaseResponseSchema",
+            '422': "HTTPValidationError",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    async def archive_events_by_type_v1_event_archive_bulk_by_type_post_with_http_info(
+        self,
+        archive_events_request_schema: ArchiveEventsRequestSchema,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[BaseResponseSchema]:
+        """Archive Events By Type
+
+        Archive events by event_id and job_type pairs. More precise than bulk archive - archives specific exchange types only.
+
+        :param archive_events_request_schema: (required)
+        :type archive_events_request_schema: ArchiveEventsRequestSchema
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._archive_events_by_type_v1_event_archive_bulk_by_type_post_serialize(
+            archive_events_request_schema=archive_events_request_schema,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "BaseResponseSchema",
+            '422': "HTTPValidationError",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    async def archive_events_by_type_v1_event_archive_bulk_by_type_post_without_preload_content(
+        self,
+        archive_events_request_schema: ArchiveEventsRequestSchema,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Archive Events By Type
+
+        Archive events by event_id and job_type pairs. More precise than bulk archive - archives specific exchange types only.
+
+        :param archive_events_request_schema: (required)
+        :type archive_events_request_schema: ArchiveEventsRequestSchema
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._archive_events_by_type_v1_event_archive_bulk_by_type_post_serialize(
+            archive_events_request_schema=archive_events_request_schema,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "BaseResponseSchema",
+            '422': "HTTPValidationError",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _archive_events_by_type_v1_event_archive_bulk_by_type_post_serialize(
+        self,
+        archive_events_request_schema,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if archive_events_request_schema is not None:
+            _body_params = archive_events_request_schema
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/v1/event/archive/bulk-by-type',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1687,7 +1964,7 @@ class EventApi:
     async def enable_planning_by_event_id_v1_event_event_id_enable_planning_patch(
         self,
         event_id: StrictStr,
-        job_type: Optional[ScrapType],
+        job_type: Optional[Any],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1759,7 +2036,7 @@ class EventApi:
     async def enable_planning_by_event_id_v1_event_event_id_enable_planning_patch_with_http_info(
         self,
         event_id: StrictStr,
-        job_type: Optional[ScrapType],
+        job_type: Optional[Any],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1831,7 +2108,7 @@ class EventApi:
     async def enable_planning_by_event_id_v1_event_event_id_enable_planning_patch_without_preload_content(
         self,
         event_id: StrictStr,
-        job_type: Optional[ScrapType],
+        job_type: Optional[Any],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2243,7 +2520,7 @@ class EventApi:
     async def force_job_by_event_id_v1_event_event_id_force_post(
         self,
         event_id: StrictStr,
-        scrap_type: Optional[ScrapType] = None,
+        scrap_type: Optional[Any] = None,
         enable: Optional[StrictBool] = None,
         _request_timeout: Union[
             None,
@@ -2319,7 +2596,7 @@ class EventApi:
     async def force_job_by_event_id_v1_event_event_id_force_post_with_http_info(
         self,
         event_id: StrictStr,
-        scrap_type: Optional[ScrapType] = None,
+        scrap_type: Optional[Any] = None,
         enable: Optional[StrictBool] = None,
         _request_timeout: Union[
             None,
@@ -2395,7 +2672,7 @@ class EventApi:
     async def force_job_by_event_id_v1_event_event_id_force_post_without_preload_content(
         self,
         event_id: StrictStr,
-        scrap_type: Optional[ScrapType] = None,
+        scrap_type: Optional[Any] = None,
         enable: Optional[StrictBool] = None,
         _request_timeout: Union[
             None,
@@ -3341,6 +3618,291 @@ class EventApi:
 
 
     @validate_call
+    async def get_events_cursor_v1_event_cursor_get(
+        self,
+        cursor: Optional[StrictStr] = None,
+        limit: Annotated[Optional[StrictInt], Field(description="Limit")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> EventsCursorResponseSchema:
+        """Get Events Cursor
+
+        Get all events using cursor-based pagination. Returns distinct event_id and job_type pairs.
+
+        :param cursor:
+        :type cursor: str
+        :param limit: Limit
+        :type limit: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_events_cursor_v1_event_cursor_get_serialize(
+            cursor=cursor,
+            limit=limit,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EventsCursorResponseSchema",
+            '404': None,
+            '422': "HTTPValidationError",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    async def get_events_cursor_v1_event_cursor_get_with_http_info(
+        self,
+        cursor: Optional[StrictStr] = None,
+        limit: Annotated[Optional[StrictInt], Field(description="Limit")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[EventsCursorResponseSchema]:
+        """Get Events Cursor
+
+        Get all events using cursor-based pagination. Returns distinct event_id and job_type pairs.
+
+        :param cursor:
+        :type cursor: str
+        :param limit: Limit
+        :type limit: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_events_cursor_v1_event_cursor_get_serialize(
+            cursor=cursor,
+            limit=limit,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EventsCursorResponseSchema",
+            '404': None,
+            '422': "HTTPValidationError",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    async def get_events_cursor_v1_event_cursor_get_without_preload_content(
+        self,
+        cursor: Optional[StrictStr] = None,
+        limit: Annotated[Optional[StrictInt], Field(description="Limit")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Get Events Cursor
+
+        Get all events using cursor-based pagination. Returns distinct event_id and job_type pairs.
+
+        :param cursor:
+        :type cursor: str
+        :param limit: Limit
+        :type limit: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_events_cursor_v1_event_cursor_get_serialize(
+            cursor=cursor,
+            limit=limit,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EventsCursorResponseSchema",
+            '404': None,
+            '422': "HTTPValidationError",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _get_events_cursor_v1_event_cursor_get_serialize(
+        self,
+        cursor,
+        limit,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        if cursor is not None:
+            
+            _query_params.append(('cursor', cursor))
+            
+        if limit is not None:
+            
+            _query_params.append(('limit', limit))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/v1/event/cursor',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
     async def get_events_v1_event_get(
         self,
         page: Annotated[Optional[StrictInt], Field(description="Page")] = None,
@@ -4199,7 +4761,7 @@ class EventApi:
     @validate_call
     async def scheduled_events_v1_event_scheduled_events_get(
         self,
-        job_type: Annotated[Optional[ScrapType], Field(description="Job type")] = None,
+        job_type: Annotated[Optional[Any], Field(description="Job type")] = None,
         page: Annotated[Optional[StrictInt], Field(description="Page")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Limit")] = None,
         _request_timeout: Union[
@@ -4275,7 +4837,7 @@ class EventApi:
     @validate_call
     async def scheduled_events_v1_event_scheduled_events_get_with_http_info(
         self,
-        job_type: Annotated[Optional[ScrapType], Field(description="Job type")] = None,
+        job_type: Annotated[Optional[Any], Field(description="Job type")] = None,
         page: Annotated[Optional[StrictInt], Field(description="Page")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Limit")] = None,
         _request_timeout: Union[
@@ -4351,7 +4913,7 @@ class EventApi:
     @validate_call
     async def scheduled_events_v1_event_scheduled_events_get_without_preload_content(
         self,
-        job_type: Annotated[Optional[ScrapType], Field(description="Job type")] = None,
+        job_type: Annotated[Optional[Any], Field(description="Job type")] = None,
         page: Annotated[Optional[StrictInt], Field(description="Page")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Limit")] = None,
         _request_timeout: Union[

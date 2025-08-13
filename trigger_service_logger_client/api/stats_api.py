@@ -1,5 +1,3 @@
-# coding: utf-8
-
 """
     FastAPI
 
@@ -11,6 +9,7 @@
     Do not edit the class manually.
 """  # noqa: E501
 
+
 import warnings
 from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -18,7 +17,6 @@ from typing_extensions import Annotated
 
 from pydantic import StrictStr
 from typing import Any, Optional
-from trigger_service_logger_client.models.scrap_type import ScrapType
 from trigger_service_logger_client.models.scraped_events_count_schema import ScrapedEventsCountSchema
 from trigger_service_logger_client.models.scraping_timing_stats_schema import ScrapingTimingStatsSchema
 from trigger_service_logger_client.models.scraping_timing_time_series_schema import ScrapingTimingTimeSeriesSchema
@@ -822,7 +820,7 @@ class StatsApi:
         self,
         time_interval: Optional[StrictStr] = None,
         vendor: Optional[StrictStr] = None,
-        job_type: Optional[ScrapType] = None,
+        job_type: Optional[Any] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -898,7 +896,7 @@ class StatsApi:
         self,
         time_interval: Optional[StrictStr] = None,
         vendor: Optional[StrictStr] = None,
-        job_type: Optional[ScrapType] = None,
+        job_type: Optional[Any] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -974,7 +972,7 @@ class StatsApi:
         self,
         time_interval: Optional[StrictStr] = None,
         vendor: Optional[StrictStr] = None,
-        job_type: Optional[ScrapType] = None,
+        job_type: Optional[Any] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1402,7 +1400,7 @@ class StatsApi:
     async def get_vendor_stats_time_series_v1_stats_vendor_stats_time_series_get(
         self,
         time_interval: Optional[StrictStr] = None,
-        job_type: Optional[ScrapType] = None,
+        job_type: Optional[Any] = None,
         vendor: Optional[StrictStr] = None,
         _request_timeout: Union[
             None,
@@ -1478,7 +1476,7 @@ class StatsApi:
     async def get_vendor_stats_time_series_v1_stats_vendor_stats_time_series_get_with_http_info(
         self,
         time_interval: Optional[StrictStr] = None,
-        job_type: Optional[ScrapType] = None,
+        job_type: Optional[Any] = None,
         vendor: Optional[StrictStr] = None,
         _request_timeout: Union[
             None,
@@ -1554,7 +1552,7 @@ class StatsApi:
     async def get_vendor_stats_time_series_v1_stats_vendor_stats_time_series_get_without_preload_content(
         self,
         time_interval: Optional[StrictStr] = None,
-        job_type: Optional[ScrapType] = None,
+        job_type: Optional[Any] = None,
         vendor: Optional[StrictStr] = None,
         _request_timeout: Union[
             None,
@@ -1702,7 +1700,7 @@ class StatsApi:
         self,
         time_interval: Optional[StrictStr] = None,
         vendor: Optional[StrictStr] = None,
-        job_type: Optional[ScrapType] = None,
+        job_type: Optional[Any] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1778,7 +1776,7 @@ class StatsApi:
         self,
         time_interval: Optional[StrictStr] = None,
         vendor: Optional[StrictStr] = None,
-        job_type: Optional[ScrapType] = None,
+        job_type: Optional[Any] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1854,7 +1852,7 @@ class StatsApi:
         self,
         time_interval: Optional[StrictStr] = None,
         vendor: Optional[StrictStr] = None,
-        job_type: Optional[ScrapType] = None,
+        job_type: Optional[Any] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],

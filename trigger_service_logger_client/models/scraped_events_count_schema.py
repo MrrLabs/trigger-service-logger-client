@@ -21,6 +21,7 @@ from pydantic import BaseModel, ConfigDict, StrictInt
 from typing import Any, ClassVar, Dict, List
 from typing import Optional, Set
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 class ScrapedEventsCountSchema(BaseModel):
     """
@@ -29,10 +30,21 @@ class ScrapedEventsCountSchema(BaseModel):
     ticketmaster: StrictInt
     vividseats: StrictInt
     evenue: StrictInt
-    __properties: ClassVar[List[str]] = ["ticketmaster", "vividseats", "evenue"]
+    tickpick: StrictInt
+    stubhub: StrictInt
+    gotickets: StrictInt
+    milb: StrictInt
+    mlb: StrictInt
+    playhousesquare: StrictInt
+    telecharge: StrictInt
+    mpv: StrictInt
+    etix: StrictInt
+    ovationtix: StrictInt
+    __properties: ClassVar[List[str]] = ["ticketmaster", "vividseats", "evenue", "tickpick", "stubhub", "gotickets", "milb", "mlb", "playhousesquare", "telecharge", "mpv", "etix", "ovationtix"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -44,8 +56,7 @@ class ScrapedEventsCountSchema(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -84,7 +95,17 @@ class ScrapedEventsCountSchema(BaseModel):
         _obj = cls.model_validate({
             "ticketmaster": obj.get("ticketmaster"),
             "vividseats": obj.get("vividseats"),
-            "evenue": obj.get("evenue")
+            "evenue": obj.get("evenue"),
+            "tickpick": obj.get("tickpick"),
+            "stubhub": obj.get("stubhub"),
+            "gotickets": obj.get("gotickets"),
+            "milb": obj.get("milb"),
+            "mlb": obj.get("mlb"),
+            "playhousesquare": obj.get("playhousesquare"),
+            "telecharge": obj.get("telecharge"),
+            "mpv": obj.get("mpv"),
+            "etix": obj.get("etix"),
+            "ovationtix": obj.get("ovationtix")
         })
         return _obj
 
